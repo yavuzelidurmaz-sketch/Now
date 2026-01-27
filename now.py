@@ -9,21 +9,53 @@ from urllib.parse import urljoin
 BASE_URL = "https://www.nowtv.com.tr"
 M3U_FILENAME = "nowtv.m3u"
 
-# KATEGORİ HARİTASI
-CATEGORY_MAP = [
-    {"url": "https://www.nowtv.com.tr/dizi-izle", "name": "NOW DIZILER"},
-    {"url": "https://www.nowtv.com.tr/program-izle", "name": "NOW PROGRAMLAR"},
-    {"url": "https://www.nowtv.com.tr/now-spor", "name": "NOW SPOR"},
-    {"url": "https://www.nowtv.com.tr/now-haber", "name": "NOW HABER"},
-    {"url": "https://www.nowtv.com.tr/dizi-arsivi", "name": "NOW DIZI ARSIV"},
-    {"url": "https://www.nowtv.com.tr/program-arsivi", "name": "NOW PROGRAM ARSIV"}
-]
+# --- SABİT DİZİ LİSTESİ (Senin JSON Verin) ---
+# Bot artık siteyi taramakla uğraşmaz, bu listedeki her şeye gidip bölüm arar.
+STARTING_DATA = {
+    "kizil-goncalar": { "isim": "Kızıl Goncalar", "link": "https://www.nowtv.com.tr/Kizil-Goncalar/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1721", "kategori": "NOW DIZILER" },
+    "hudutsuz-sevda": { "isim": "Hudutsuz Sevda", "link": "https://www.nowtv.com.tr/Hudutsuz-Sevda/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1693", "kategori": "NOW DIZILER" },
+    "yabani": { "isim": "Yabani", "link": "https://www.nowtv.com.tr/Yabani/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1691", "kategori": "NOW DIZILER" },
+    "leyla-hayat-ask-adalet": { "isim": "Leyla: Hayat… Aşk… Adalet...", "link": "https://www.nowtv.com.tr/Leyla-Hayat-Ask-Adalet/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1780", "kategori": "NOW DIZILER" },
+    "sakir-pasa-ailesi": { "isim": "Şakir Paşa Ailesi", "link": "https://www.nowtv.com.tr/Sakir-Pasa-Ailesi-Mucizeler-ve-Skandallar/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1786", "kategori": "NOW DIZILER" },
+    "ask-evlilik-bosanma": { "isim": "Aşk Evlilik Boşanma", "link": "https://www.nowtv.com.tr/Ask-Evlilik-Bosanma/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1785", "kategori": "NOW DIZILER" },
+    "gizli-bahce": { "isim": "Gizli Bahçe", "link": "https://www.nowtv.com.tr/Gizli-Bahce/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1777", "kategori": "NOW DIZILER" },
+    "kirli-sepeti": { "isim": "Kirli Sepeti", "link": "https://www.nowtv.com.tr/Kirli-Sepeti/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1694", "kategori": "NOW DIZILER" },
+    "kotu-kan": { "isim": "Kötü Kan", "link": "https://www.nowtv.com.tr/Kotu-Kan/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1759", "kategori": "NOW DIZILER" },
+    "gaddar": { "isim": "Gaddar", "link": "https://www.nowtv.com.tr/Gaddar/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1719", "kategori": "NOW DIZI ARSIV" },
+    "sahane-hayatim": { "isim": "Şahane Hayatım", "link": "https://www.nowtv.com.tr/Sahane-Hayatim/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1708", "kategori": "NOW DIZI ARSIV" },
+    "yasak-elma": { "isim": "Yasak Elma", "link": "https://www.nowtv.com.tr/Yasak-Elma/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1324", "kategori": "NOW DIZI ARSIV" },
+    "mucize-doktor": { "isim": "Mucize Doktor", "link": "https://www.nowtv.com.tr/Mucize-Doktor/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1495", "kategori": "NOW DIZI ARSIV" },
+    "sen-cal-kapimi": { "isim": "Sen Çal Kapımı", "link": "https://www.nowtv.com.tr/Sen-Cal-Kapimi/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1536", "kategori": "NOW DIZI ARSIV" },
+    "bambaska-biri": { "isim": "Bambaşka Biri", "link": "https://www.nowtv.com.tr/Bambaska-Biri/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1698", "kategori": "NOW DIZI ARSIV" },
+    "adim-farah": { "isim": "Adım Farah", "link": "https://www.nowtv.com.tr/Adim-Farah/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1661", "kategori": "NOW DIZI ARSIV" },
+    "mahkum": { "isim": "Mahkum", "link": "https://www.nowtv.com.tr/Mahkum/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1615", "kategori": "NOW DIZI ARSIV" },
+    "son-yaz": { "isim": "Son Yaz", "link": "https://www.nowtv.com.tr/Son-Yaz/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1571", "kategori": "NOW DIZI ARSIV" },
+    "savasci": { "isim": "Savaşçı", "link": "https://www.nowtv.com.tr/Savasci/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1167", "kategori": "NOW DIZI ARSIV" },
+    "ask-mantik-intikam": { "isim": "Aşk Mantık İntikam", "link": "https://www.nowtv.com.tr/Ask-Mantik-Intikam/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1588", "kategori": "NOW DIZI ARSIV" },
+    "karagul": { "isim": "Karagül", "link": "https://www.nowtv.com.tr/Karagul/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/35", "kategori": "NOW DIZI ARSIV" },
+    "kiraz-mevsimi": { "isim": "Kiraz Mevsimi", "link": "https://www.nowtv.com.tr/Kiraz-Mevsimi/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/50", "kategori": "NOW DIZI ARSIV" },
+    "bay-yanlis": { "isim": "Bay Yanlış", "link": "https://www.nowtv.com.tr/Bay-Yanlis/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1533", "kategori": "NOW DIZI ARSIV" },
+    "korkma-ben-yanindayim": { "isim": "Korkma Ben Yanındayım", "link": "https://www.nowtv.com.tr/Korkma-Ben-Yanindayim/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1731", "kategori": "NOW DIZI ARSIV" },
+    "sana-bir-sir-verecegim": { "isim": "Sana Bir Sır Vereceğim", "link": "https://www.nowtv.com.tr/Sana-Bir-Sir-Verecegim/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/38", "kategori": "NOW DIZI ARSIV" },
+    "lale-devri": { "isim": "Lale Devri", "link": "https://www.nowtv.com.tr/Lale-Devri/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1", "kategori": "NOW DIZI ARSIV" },
+    "no-309": { "isim": "No: 309", "link": "https://www.nowtv.com.tr/No-309/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/68", "kategori": "NOW DIZI ARSIV" },
+    "bizim-hikaye": { "isim": "Bizim Hikaye", "link": "https://www.nowtv.com.tr/Bizim-Hikaye/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1266", "kategori": "NOW DIZI ARSIV" },
+    "kadin": { "isim": "Kadın", "link": "https://www.nowtv.com.tr/Kadin/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1283", "kategori": "NOW DIZI ARSIV" },
+    "now-ana-haber": { "isim": "NOW Ana Haber", "link": "https://www.nowtv.com.tr/Selcuk-Tepeli-ile-NOW-Ana-Haber", "resim": "https://www.nowtv.com.tr/i/thumbnail/1714", "kategori": "NOW HABER" },
+    "now-haber-haftasonu": { "isim": "Gülbin Tosun ile NOW Ana Haber Hafta Sonu", "link": "https://www.nowtv.com.tr/Gulbin-Tosun-ile-NOW-Ana-Haber-Hafta-Sonu", "resim": "https://www.nowtv.com.tr/i/thumbnail/1715", "kategori": "NOW HABER" },
+    "alar-saat": { "isim": "İlker Karagöz ile Çalar Saat", "link": "https://www.nowtv.com.tr/Ilker-Karagoz-ile-Calar-Saat", "resim": "https://www.nowtv.com.tr/i/thumbnail/1716", "kategori": "NOW HABER" },
+    "cagla-ile-yeni-bir-gun": { "isim": "Çağla ile Yeni Bir Gün", "link": "https://www.nowtv.com.tr/Cagla-ile-Yeni-Bir-Gun/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1360", "kategori": "NOW PROGRAMLAR" },
+    "en-hamarat-benim": { "isim": "En Hamarat Benim", "link": "https://www.nowtv.com.tr/En-Hamarat-Benim/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1592", "kategori": "NOW PROGRAMLAR" },
+    "fatih-savas-ile-sabah-sohbetleri": { "isim": "Fatih Savaş ile Sabah Sohbetleri", "link": "https://www.nowtv.com.tr/Fatih-Savas-ile-Sabah-Sohbetleri/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1429", "kategori": "NOW PROGRAMLAR" },
+    "memet-ozer-ile-mutfakta": { "isim": "Memet Özer ile Mutfakta", "link": "https://www.nowtv.com.tr/Memet-Ozer-ile-Mutfakta/izle", "resim": "https://www.nowtv.com.tr/i/thumbnail/1296", "kategori": "NOW PROGRAMLAR" }
+}
 
 def get_single_m3u8(scraper, url):
     """Eksik kalan tekil sayfalardan m3u8 çeker."""
     try:
         time.sleep(0.3)
         r = scraper.get(url, timeout=10)
+        # Basit Regex ile m3u8 bul
         match = re.search(r'https?://[^\s"\'\\,]+\.m3u8[^\s"\'\\,]*', r.text)
         if match:
             return match.group(0).replace('\\/', '/')
@@ -37,247 +69,114 @@ def commit_and_push(file_name):
         subprocess.run(["git", "config", "--global", "user.name", "github-actions[bot]"], check=True)
         subprocess.run(["git", "config", "--global", "user.email", "github-actions[bot]@users.noreply.github.com"], check=True)
         subprocess.run(["git", "add", file_name], check=True)
+        
         status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True).stdout
         if status:
-            subprocess.run(["git", "commit", "-m", f"🔄 NOW TV M3U Update: {time.strftime('%Y-%m-%d')}"], check=True)
+            subprocess.run(["git", "commit", "-m", f"🔄 NOW TV Güncelleme: {time.strftime('%Y-%m-%d')}"], check=True)
             subprocess.run(["git", "push", "--force"], check=True)
             print("🚀 GitHub'a başarıyla yüklendi!")
         else:
-            print("⚠️ Değişiklik yok, push atlanıyor.")
+            print("⚠️ Değişiklik yok.")
     except Exception as e:
         print(f"❌ Git Hatası: {e}")
 
-def collect_dynamic_series(scraper):
-    """
-    Kategorileri tarar ve içerikleri kategorisine göre etiketleyerek listeler.
-    YENİ YÖNTEM: Class bağımsız, direkt link analizi.
-    """
-    dynamic_data = {}
-    print("🌍 Kategori sayfaları taranıyor...")
-
-    for cat in CATEGORY_MAP:
-        url = cat["url"]
-        cat_name = cat["name"]
-        print(f"   📂 Kategori Taranıyor: {cat_name} ({url})")
-        
-        try:
-            resp = scraper.get(url, timeout=15)
-            # Sayfa gerçekten yüklendi mi kontrol et
-            if resp.status_code != 200:
-                print(f"      ❌ Hata: Sayfa yüklenemedi (Kod: {resp.status_code})")
-                continue
-
-            soup = BeautifulSoup(resp.text, 'html.parser')
-            
-            # Sayfa başlığını yazdır (Cloudflare engeli var mı anlamak için)
-            page_title = soup.title.string.strip() if soup.title else "Başlık Yok"
-            # print(f"      ℹ️ Sayfa Başlığı: {page_title}") 
-
-            # YENİ YÖNTEM: Tüm 'a' etiketlerini bul ve link yapılarına göre filtrele
-            all_links = soup.find_all('a', href=True)
-            
-            count_in_cat = 0
-            for link_tag in all_links:
-                href = link_tag['href']
-                full_link = urljoin(BASE_URL, href)
-                
-                # Gereksiz linkleri ele (iletişim, künye, kategori ana linkleri vb.)
-                if any(x in href for x in ['/iletisim', '/kunye', '/yayin-akisi', 'facebook', 'twitter', 'instagram']):
-                    continue
-                if full_link.rstrip('/') == url.rstrip('/'): # Kendi linkini alma
-                    continue
-
-                # Sadece hedef yapıya uyan linkleri al
-                # Örn: /dizi/kizil-goncalar, /program/cagla-ile-yeni-bir-gun
-                is_valid_content = False
-                if '/dizi/' in href and '/dizi-izle' not in href and '/dizi-arsivi' not in href:
-                    is_valid_content = True
-                elif '/program/' in href and '/program-izle' not in href and '/program-arsivi' not in href:
-                    is_valid_content = True
-                elif '/now-haber' in href or '/now-spor' in href:
-                    # Haber ve Spor linkleri genelde ana kategori linkiyle aynı olabiliyor, alt içerikleri ayır
-                    if len(href.split('/')) > 2: 
-                        is_valid_content = True
-
-                if not is_valid_content:
-                    continue
-
-                try:
-                    # İsim Çıkarma (Title > Alt Text > Link Sonu)
-                    title = ""
-                    img_tag = link_tag.find('img')
-                    
-                    if link_tag.get('title'):
-                        title = link_tag.get('title').strip()
-                    elif img_tag and img_tag.get('alt'):
-                        title = img_tag.get('alt').strip()
-                    elif link_tag.find('span', class_='title'): # Yedek class kontrolü
-                        title = link_tag.find('span', class_='title').get_text(strip=True)
-                    else:
-                        # Linkten isim üret: /dizi/yabani -> Yabani
-                        title = href.strip('/').split('/')[-1].replace('-', ' ').title()
-
-                    # Resim Çıkarma
-                    img_url = ""
-                    if img_tag:
-                        img_url = img_tag.get('data-src') or img_tag.get('src')
-                        if img_url and not img_url.startswith('http'):
-                            img_url = urljoin(BASE_URL, img_url)
-                    
-                    # Eğer resim yoksa varsayılan bir logo koyalım
-                    if not img_url:
-                        img_url = "https://img-nowtv.mncdn.com/assets/images/nowtv-logo-share.jpg"
-
-                    # ID (Key) oluşturma
-                    dizi_key = href.strip('/').split('/')[-1]
-
-                    # Mükerrer kayıt önleme
-                    if dizi_key not in dynamic_data:
-                        dynamic_data[dizi_key] = {
-                            "isim": title,
-                            "link": full_link,
-                            "resim": img_url,
-                            "kategori": cat_name
-                        }
-                        count_in_cat += 1
-                except:
-                    continue
-            
-            print(f"      ✅ Bu kategoriden {count_in_cat} içerik eklendi.")
-
-        except Exception as e:
-            print(f"   ⚠️ Hata ({url}): {e}")
-    
-    print(f"\n🌍 Toplam {len(dynamic_data)} farklı içerik bulundu.\n")
-    return dynamic_data
-
 def run_scraper():
-    print("🚀 Bot Başlatıldı. M3U Modu Aktif...")
+    print(f"🚀 Bot Başlatıldı. {len(STARTING_DATA)} adet içerik işlenecek.")
     scraper = cloudscraper.create_scraper(browser={'browser': 'chrome', 'platform': 'windows', 'desktop': True})
     
-    target_series = collect_dynamic_series(scraper)
-    
-    if not target_series:
-        print("❌ Hiçbir içerik bulunamadı! Site yapısı değişmiş veya IP engelli olabilir.")
-        # Dosya boş olsa bile eskiyi silmek için commit atabiliriz ama şimdilik durduralım.
-        return
-
     memory_data = {}
 
-    for dizi_key, info in target_series.items():
-        title = info.get('isim', 'Dizi')
-        dizi_url = info.get('link', '')
-        poster = info.get('resim', '')
-        category = info.get('kategori', 'GENEL')
+    # Listeyi döngüye al
+    for key, item in STARTING_DATA.items():
+        title = item['isim']
+        link = item['link']
+        poster = item['resim']
+        category = item.get('kategori', 'NOW GENEL')
         
-        # Link Düzenleme: Haber/Spor için direkt link, diziler için /bolumler
-        base_series_url = dizi_url.split('/izle')[0].rstrip('/')
-        
-        # Haber ve Spor sayfalarında yapı farklı olabiliyor, direkt tarayalım
-        if "now-haber" in base_series_url or "now-spor" in base_series_url:
-            bolumler_url = base_series_url 
+        print(f"\n🔍 [{category}] {title} taranıyor...")
+
+        # Link Düzenleme (/bolumler ekle)
+        # Haber ve Spor sayfalarında /bolumler olmayabilir, direkt linki kullan
+        if "Haber" in title or "Spor" in title:
+            target_url = link
         else:
-            bolumler_url = base_series_url + "/bolumler"
+            target_url = link.split('/izle')[0] + "/bolumler"
 
-        print(f"🔍 [{category}] {title} işleniyor...", end=" ", flush=True)
-        
         try:
-            response = scraper.get(bolumler_url, timeout=10)
+            resp = scraper.get(target_url, timeout=10)
             
-            # 1. Aşama: Sayfa içindeki tüm .m3u8 linklerini topla (Hızlı Yöntem)
-            found_m3u8s = re.findall(r'https?://[^\s"\'\\,]+\.m3u8[^\s"\'\\,]*', response.text)
-            found_m3u8s = [m.replace('\\/', '/') for m in found_m3u8s]
-            unique_m3u8s = list(dict.fromkeys(found_m3u8s))
+            # Tüm m3u8 linklerini çek
+            all_m3u8s = re.findall(r'https?://[^\s"\'\\,]+\.m3u8[^\s"\'\\,]*', resp.text)
+            all_m3u8s = list(dict.fromkeys([m.replace('\\/', '/') for m in all_m3u8s]))
 
-            b_soup = BeautifulSoup(response.text, 'html.parser')
+            soup = BeautifulSoup(resp.text, 'html.parser')
             eps = []
+
+            # 1. YÖNTEM: Select Box (Diziler)
+            select_box = soup.find('select', id='video-finder-changer')
             
-            select_box = b_soup.find('select', id='video-finder-changer')
-            
-            # --- SENARYO A: Select Box Var (Standart Dizi Sayfası) ---
             if select_box:
                 options = select_box.find_all('option', {'data-target': True})
-                print(f"({len(options)} Bölüm)")
+                print(f"   ℹ️ {len(options)} Bölüm bulundu.")
                 
                 for i, opt in enumerate(options):
-                    b_title = opt.get_text(strip=True)
-                    b_target = opt['data-target']
+                    ep_name = opt.get_text(strip=True)
+                    ep_url = opt['data-target']
                     
-                    # Elimizdeki hazır m3u8 listesinden eşleştirmeye çalış
-                    link = unique_m3u8s[i] if i < len(unique_m3u8s) else b_target
+                    # Sıradaki m3u8'i kullan veya derin tarama yap
+                    final_link = all_m3u8s[i] if i < len(all_m3u8s) else ep_url
                     
-                    # Eğer link bir sayfa linkiyse (m3u8 değilse), içine girip al (Deep Scan)
-                    if ".m3u8" not in link:
-                        if not b_target.startswith('http'):
-                            b_target = urljoin(BASE_URL, b_target)
-                        # Çok yavaşlamaması için sadece ilk ve son bölümlerde deep scan yapabilirsin
-                        # Ama tam liste için mecbur hepsine bakacağız:
-                        link = get_single_m3u8(scraper, b_target)
+                    if ".m3u8" not in final_link:
+                        if not ep_url.startswith('http'):
+                            ep_url = urljoin(BASE_URL, ep_url)
+                        final_link = get_single_m3u8(scraper, ep_url)
                     
-                    eps.append({"ad": b_title, "link": link})
-            
-            # --- SENARYO B: Select Box Yok (Video Kartları / Haber / Spor) ---
+                    eps.append({"ad": ep_name, "link": final_link})
+
+            # 2. YÖNTEM: Video Kartları (Haber/Program/Arşiv)
             else:
-                # Video kartlarını bul (Geniş selector)
-                video_cards = b_soup.select('.video-item, .grid-item, .col-md-4 a, .card-video a')
+                cards = soup.select('.video-item, .card-video, .col-md-4 a')
+                valid_cards = [c for c in cards if c.get('href') and '/izle/' in c.get('href')]
                 
-                # Eğer direkt video kartı bulamadıysa, sayfadaki tüm 'izle' linklerine bak
-                if not video_cards:
-                     all_links = b_soup.find_all('a', href=True)
-                     video_cards = [l for l in all_links if '/izle/' in l['href']]
-
-                if video_cards:
-                     print(f"({len(video_cards)} Video - Alternatif)")
-                     count = 0
-                     for card in video_cards:
-                         if count >= 20: break # Çok fazla video varsa limitle (haberler vb.)
-                         
-                         v_link = card.get('href')
-                         # Başlık bulma çabası
-                         v_title = card.get('title') 
-                         if not v_title: 
-                             v_title = card.find('img')['alt'] if card.find('img') else card.get_text(strip=True)
-                         if not v_title:
-                             v_title = "Video"
-
-                         if v_link and "/izle/" in v_link:
-                             full_v_link = urljoin(BASE_URL, v_link)
-                             # Link ana dizi linkiyle aynıysa atla
-                             if full_v_link.rstrip('/') == base_series_url.rstrip('/'): continue
-
-                             link = get_single_m3u8(scraper, full_v_link)
-                             eps.append({"ad": v_title, "link": link})
-                             count += 1
+                if valid_cards:
+                    print(f"   ℹ️ {len(valid_cards)} Video bulundu (Alternatif).")
+                    for c in valid_cards[:20]: # Son 20 video ile sınırla
+                        v_link = urljoin(BASE_URL, c.get('href'))
+                        v_title = c.get('title') or c.get_text(strip=True) or "Bölüm"
+                        
+                        # Ana dizi linkiyle aynıysa atla
+                        if v_link == link: continue
+                        
+                        final_link = get_single_m3u8(scraper, v_link)
+                        eps.append({"ad": v_title, "link": final_link})
                 else:
-                    print("(Bölüm bulunamadı)")
+                    print("   ❌ Bölüm bulunamadı.")
 
+            # Veriyi kaydet
             if eps:
-                memory_data[dizi_key] = {
-                    "isim": title, 
-                    "resim": poster, 
+                memory_data[key] = {
+                    "isim": title,
+                    "resim": poster,
                     "kategori": category,
                     "bolumler": eps
                 }
-            else:
-                # Bölüm bulamasa bile 'Canlı Yayın' veya tekil içerik olabilir mi?
-                # Şimdilik boş geçiyoruz.
-                pass
+                print(f"   ✅ Eklendi: {len(eps)} parça.")
 
         except Exception as e:
-            print(f"⚠️ Hata: {e}")
+            print(f"   ⚠️ Hata: {e}")
 
+    # M3U Oluştur
     if memory_data:
         create_m3u(memory_data)
     else:
-        print("❌ M3U oluşturulacak veri yok.")
+        print("❌ Hiçbir veri işlenemedi.")
 
 def create_m3u(data):
-    print(f"\n📝 {M3U_FILENAME} dosyası oluşturuluyor...")
-    
+    print(f"\n📝 {M3U_FILENAME} oluşturuluyor...")
     with open(M3U_FILENAME, "w", encoding="utf-8") as f:
         f.write("#EXTM3U\n")
         
-        # Kategorilere göre sırala
+        # Kategoriye göre sırala
         sorted_keys = sorted(data.keys(), key=lambda k: data[k]['kategori'])
         
         for key in sorted_keys:
@@ -287,13 +186,9 @@ def create_m3u(data):
             series_name = item['isim']
             
             for bolum in item['bolumler']:
-                ep_name = bolum['ad']
-                link = bolum['link']
-                
-                # M3U Satır Formatı
-                f.write(f'#EXTINF:-1 group-title="{group}" tvg-logo="{poster}", {series_name} - {ep_name}\n')
-                f.write(f'{link}\n')
-
+                f.write(f'#EXTINF:-1 group-title="{group}" tvg-logo="{poster}", {series_name} - {bolum["ad"]}\n')
+                f.write(f'{bolum["link"]}\n')
+    
     commit_and_push(M3U_FILENAME)
 
 if __name__ == "__main__":
