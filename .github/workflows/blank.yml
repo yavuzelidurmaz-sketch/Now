@@ -26,7 +26,7 @@ jobs:
           pip install cloudscraper beautifulsoup4
 
       - name: Scraper'ı Çalıştır
-        run: python nowtv.py
+        run: python now.py
 
       # Python kodu kendi içinde git push yapıyor ama
       # garanti olsun diye buraya bir kontrol adımı koyabiliriz.
