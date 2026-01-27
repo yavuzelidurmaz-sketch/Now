@@ -1,0 +1,34 @@
+name: NowTV Arşiv Güncelleyici
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Her gece 00:00'da çalışır
+  workflow_dispatch: # Manuel çalıştırma butonu
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Repoyu Çek
+        uses: actions/checkout@v3
+
+      - name: Python Kur
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Kütüphaneleri Yükle
+        run: |
+          pip install cloudscraper beautifulsoup4
+
+      - name: Scraper'ı Çalıştır
+        run: python nowtv.py
+
+      # Python kodu kendi içinde git push yapıyor ama
+      # garanti olsun diye buraya bir kontrol adımı koyabiliriz.
+      - name: İşlem Tamamlandı
+        run: echo "Scraper tamamlandı."
